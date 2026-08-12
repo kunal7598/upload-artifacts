@@ -29,15 +29,11 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
-      - name: Check build files
-        run: |
-          pwd
-          ls -la
-          ls -la dist
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: build-artifacts
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
 
   deploy:
     needs: build
