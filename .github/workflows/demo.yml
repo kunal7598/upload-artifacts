@@ -72,7 +72,7 @@ jobs:
 
       - name: Viewing Outputs
         run: |
-          echo "{{ needs.build.outputs.js-file }}"
-          
+          echo "${{ needs.build.outputs.js-file }}"
+
       - name: Deploy
         run: echo "Deploying..."
