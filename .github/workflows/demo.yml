@@ -22,6 +22,9 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      js-file: ${{ steps.publish-js.outputs.script-file }}
+
     steps:
       - name: Get code
         uses: actions/checkout@v4
@@ -29,20 +32,22 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
-      # - name: Publish JS filename
-      #   run: find dist/assets/*.js -type f -execdir echo '{}' ';'
-      - name: Saving output
-        id: find-js
-        run: |
-          echo "script-file1=index-1234abc.js" >> "$GITHUB_OUTPUT"
-          echo "script-file2=index-5678abc.js" >> "$GITHUB_OUTPUT"
-          echo "script-file3=index-9876abc.js" >> "$GITHUB_OUTPUT"
+      - name: Publish JS filename
+        id: publish-js
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
+
+      # - name: Saving output
+      #   id: find-js
+      #   run: |
+      #     echo "script-file1=index-1234abc.js" >> "$GITHUB_OUTPUT"
+      #     echo "script-file2=index-5678abc.js" >> "$GITHUB_OUTPUT"
+      #     echo "script-file3=index-9876abc.js" >> "$GITHUB_OUTPUT"
       
-      - name: Retrieving Outputs
-        run: |
-          echo ${{ steps.find-js.outputs.script-file }}
-          echo ${{ steps.find-js.outputs.script-file1 }}
-          echo ${{ steps.find-js.outputs.script-file2 }}
+      # - name: Retrieving Outputs
+      #   run: |
+      #     echo ${{ steps.find-js.outputs.script-file }}
+      #     echo ${{ steps.find-js.outputs.script-file1 }}
+      #     echo ${{ steps.find-js.outputs.script-file2 }}
           
         
       - name: Uploading artifacts
@@ -64,5 +69,10 @@ jobs:
         run: |
           pwd
           ls -la
+
+      - name: Viewing Outputs
+        run: |
+          echo "{{ needs.build.outputs.js-file }}"
+          
       - name: Deploy
         run: echo "Deploying..."
